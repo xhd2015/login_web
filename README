@@ -1,0 +1,34 @@
+public static void HowToUse()
+	{
+		//==== init a logger.
+		HITLoginFetcher hit=new HITLoginFetcher();
+		
+		
+		//== down here, fill in you usercode & password
+		//== Note:for security reason, the original usercode & password are masked.
+		hit.setUserInfo("114********","**********");
+		
+		//== post a request to login the page
+		hit.login();
+		
+		//== Am I logged in?
+		if(hit.isLogin())
+		{
+			//=== take a look at your personal information
+			show(sViewUserInfoUri,"Cookie",hit.getCookie());
+			
+			//===  see how many courses you have chosen
+			showPost(sChosenCoursesUri,String.format(sFormatterOfChosenCoursesUriData,"xx","2017-20181"),					
+					"Cookie",hit.getCookie());
+			
+			//===  see your grades through the whole life of university.
+			showPost(sViewGrades,sFormmaterOfViewGradesData,"Cookie",hit.getCookie());
+			
+			
+		}else{//==bad luck, seems that or your userinfo is not correct, 
+			//== or the pages have been updated so that the original workaround fails.
+			//==== if you find it is the latter reason that fails it, inform us to make an update.
+			
+			System.out.println("Sorry,login failed");
+		}
+	}
