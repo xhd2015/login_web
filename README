@@ -1,3 +1,9 @@
+
+#实现基于Cookie的哈工大校内网操作
+我为什么没有早点发现这些东西？
+
+#登录校内网
+使用HITLoginFetcher框架
 public static void HowToUse()
 	{
 		//==== init a logger.
@@ -32,3 +38,68 @@ public static void HowToUse()
 			System.out.println("Sorry,login failed");
 		}
 	}
+
+
+
+#选课
+使用登陆框架，配合HITPageProcessor进行处理，代码参考如下：
+		HITLoginFetcher hit=new HITLoginFetcher();
+		hit.setSecurityScript(FileUtils.readFile("src/res/security.js","utf8"));
+
+		PrivateValueInterface privateValues=PrivateValueInterfaceFactory.getInterface(PrivateValueInterfaceFactory.INTERFACE_FULTON);
+		hit.setUserInfo((String)privateValues.getValue(privateValues.USER_ID),
+				(String)privateValues.getValue(privateValues.USER_DEFAULT_PASSWORD));
+		hit.login();
+		if(hit.isLogin())
+		{
+			System.out.println("已经登录");
+			
+			CoursesListProcessor procList=new CoursesListProcessor();
+			procList.setCookie(hit.getCookie());
+			procList.set(procList.KEY_REQ_CATTALOGUE, "xx");
+			procList.set(procList.KEY_REQ_SEM, "2017-20181");
+			System.out.println(procList.getList());
+			System.out.println(procList.getLastToken());
+			if(procList.getLastToken()==null)
+			{
+				System.err.println("token错误!");
+				return;
+			}
+			
+			
+			
+			AddCourseProcessor proc0=new AddCourseProcessor();
+			proc0.setCookie(hit.getCookie());
+			proc0.set(KEY_REQ_CATELOGUE, "xx");
+			proc0.set(KEY_REQ_SEM, "2017-20181");
+			proc0.set(proc0.KEY_TOKEN,procList.getLastToken());
+			proc0.add("2017-2018-1-13SC03200100-001");//密码学基础
+			
+			System.out.println("course added");
+			
+			SelectedCoursesListProcessor proc=new SelectedCoursesListProcessor();
+			proc.setCookie(hit.getCookie());
+			proc.set(SelectedCoursesListProcessor.KEY_REQ_CATTALOGUE, "xx");
+			proc.set(KEY_REQ_SEM, "2017-20181");
+			List<Pair<String, String>> list=proc.getList();
+			System.out.println("已选课程:"+list);	
+			
+			WithdrawCoursesProcessor proc2=new WithdrawCoursesProcessor();
+			proc2.setCookie(hit.getCookie());
+			proc2.set(KEY_REQ_CATELOGUE, "xx");
+			proc2.set(KEY_REQ_SEM, "2017-20181");
+			System.out.println("succeed?"+proc2.withdraw(list.get(0).second)); //2017-2018-1-13SC03200100-001
+			
+			System.out.println("删除后剩余的课程:"+proc.getList());
+			
+		}
+		
+结果如下：
+
+已经登录
+[<密码学基础,2017-2018-1-13SC03200100-001>, <网络安全,2017-2018-1-13SC03200600-001-A>, <软件体系结构与设计模式,2017-2018-1-13SC37100500-001>, <数据挖掘,2017-2018-1-13SE03102700-001>, <移动计算,2017-2018-1-13SE03102900-001-A>, <计算机视觉,2017-2018-1-13SE03103110-001>, <虚拟现实,2017-2018-1-13SE03103200-001>, <数据压缩,2017-2018-1-13SE03103300-001>, <语音信号处理,2017-2018-1-13SE03103400-001>, <信息检索,2017-2018-1-13SE03103500-001>, <智能机器人,2017-2018-1-13SE03103700-001>, <分布式系统,2017-2018-1-13SE03103800-001>, <计算生物学,2017-2018-1-13SE03400500-001>]
+0.7530650209225505
+course added
+已选课程:[<密码学基础,2017-2018-1-13SC03200100-001>]
+succeed?true
+删除后剩余的课程:[]

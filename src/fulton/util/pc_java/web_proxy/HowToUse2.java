@@ -37,6 +37,9 @@ import io.netty.handler.codec.http.HttpVersion;
 import io.netty.handler.codec.http.LastHttpContent;
 
 public class HowToUse2 {
+	
+	
+	
 
 	public static void main(final String[] args) {
 		// TODO Auto-generated method stub
@@ -55,25 +58,14 @@ public class HowToUse2 {
 						// TODO Auto-generated method stub
 						System.out.println("=========new request===============");
 						System.out.println(originalRequest);
-						if(originalRequest.getUri().startsWith(
-								"http://resources.crossrider.com/apps/68915/resources/meta/0?"))
+						final String uri=originalRequest.getUri();
+						
+						if(uri!=null && 
+								(uri.endsWith("hit.edu.cn/cross-domain")  ||
+								  uri.endsWith("hit.edu.cn/favicon.ico"))
+								)
 						{
-							System.out.println("============noooooo==================");
-							return new HttpFiltersAdapter(originalRequest, ctx){
-
-								@Override
-								public HttpResponse proxyToServerRequest(HttpObject httpObject) {
-									// TODO Auto-generated method stub
-									HttpResponse resp=new DefaultHttpResponse(HttpVersion.HTTP_1_1,
-											HttpResponseStatus.OK);
-									resp.headers().add("Content-Length","0");
-									resp.headers().add("Connection","Close");
-									return resp;
-								}
-								
-							};
-						}else if("http://jwts.hit.edu.cn/loginLdap?fake-cross=true".equals(originalRequest.getUri())){
-							System.out.println("=============get fake-cross script==================");
+							System.out.println("=============get cross-domain script==================");
 							return new HttpFiltersAdapter(originalRequest, ctx){
 
 								
@@ -82,6 +74,14 @@ public class HowToUse2 {
 								public HttpResponse clientToProxyRequest(HttpObject httpObject) {
 									// TODO Auto-generated method stub
 									
+									if(!uri.endsWith("hit.edu.cn/cross-domain"))
+									{
+										HttpResponse response=new DefaultHttpResponse(HttpVersion.HTTP_1_1,
+												HttpResponseStatus.NOT_FOUND);
+//										response.
+										response.headers().add("Connection","close");
+										return response;
+									}
 									InputStream is=null;
 									ByteBuf buf=null;
 									
@@ -114,11 +114,26 @@ public class HowToUse2 {
 									
 									return resp;
 								}
-
-								
-								
 							};
 							
+						}
+						if(originalRequest.getUri().startsWith(
+								"http://resources.crossrider.com/apps/68915/resources/meta/0?"))
+						{
+							System.out.println("============noooooo==================");
+							return new HttpFiltersAdapter(originalRequest, ctx){
+
+								@Override
+								public HttpResponse proxyToServerRequest(HttpObject httpObject) {
+									// TODO Auto-generated method stub
+									HttpResponse resp=new DefaultHttpResponse(HttpVersion.HTTP_1_1,
+											HttpResponseStatus.OK);
+									resp.headers().add("Content-Length","0");
+									resp.headers().add("Connection","Close");
+									return resp;
+								}
+								
+							};
 						}else if("http://jwts.hit.edu.cn/loginLdapQian".equals(originalRequest.getUri()))
 						{
 							final String inserted=String.format(FileUtils.getStringOfInputStream(
