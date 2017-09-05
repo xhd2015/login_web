@@ -14,5 +14,14 @@
 	<classpathentry kind="lib" path="D:/Pool/include/jars/httpclient/httpmime-4.5.3.jar"/>
 	<classpathentry kind="lib" path="D:/Pool/include/jars/httpclient/jna-4.1.0.jar"/>
 	<classpathentry kind="lib" path="D:/Pool/include/jars/httpclient/jna-platform-4.1.0.jar"/>
+	<classpathentry kind="lib" path="D:/Pool/include/jars/okhttp/okhttp-2.7.5.jar" sourcepath="D:/Pool/include/jars/okhttp/okhttp-2.7.5-sources.jar"/>
+	<classpathentry kind="lib" path="D:/Pool/include/jars/okhttp/okhttp-2.7.5-javadoc.jar"/>
+	<classpathentry kind="lib" path="D:/Pool/include/jars/okhttp/okhttp-2.7.5-sources.jar"/>
+	<classpathentry kind="lib" path="D:/Pool/include/jars/okhttp/okio-1.13.0.jar"/>
+	<classpathentry kind="lib" path="D:/Pool/include/jars/littleproxy-1.1.2-littleproxy-shade.jar" sourcepath="D:/Pool/include/jars/LittleProxy-littleproxy-1.1.2/LittleProxy-littleproxy-1.1.2/src/main/java">
+		<attributes>
+			<attribute name="source_encoding" value="UTF-8"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

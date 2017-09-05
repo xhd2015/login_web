@@ -1,11 +1,7 @@
 package utils;
 
-import java.io.BufferedReader;
+
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.io.UnsupportedEncodingException;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -16,70 +12,32 @@ import org.apache.http.client.fluent.Response;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.entity.ContentType;
-import org.apache.http.entity.mime.Header;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
-import org.apache.http.util.EntityUtils;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
 
-import fetcher.HITLoginFetcher;
 import fulton.util.java.optional_exceptions.ErrorWrappedException;
 
 public class NetUtils {
 	
-	public static String getStringOfInputStream(InputStream is,long length,String charset)
-	{
-		try {
-			BufferedReader reader=new BufferedReader(new InputStreamReader(is, charset==null?"utf8":charset));
-			StringBuilder sbBuilder=new StringBuilder();
-			String s=null;
-			while( (s=reader.readLine())!=null)
-				sbBuilder.append(s).append(System.lineSeparator());
-			return sbBuilder.toString();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return null;
-		}
-		
-	}
-	
-	
+	/**
+	 * 你好，费尔南达
+	 * @param content
+	 * @return
+	 */
 	public static String toString(Content content)
 	{
 		return content.asString();
 	}
 	public static String getContentString(HttpResponse resp)
 	{
-		try {
-			return getStringOfInputStream(resp.getEntity().getContent(),resp.getEntity().getContentLength(),
-					null);
-		} catch (UnsupportedOperationException | IOException e) {
-			// TODO Auto-generated catch block
-			throw new RuntimeException();
-		}
+		return null;
 	}
 	
 	
 	public static void main(String...args) throws ClientProtocolException, IOException
 	{
-		testHIT();
 	}
-	public static void testHIT()
-	{
-		try {
-			Response a=Request.Get("http://jwts.hit.edu.cn/loginLdapQian").execute();
-			HttpResponse resp=a.returnResponse();
-			Document doc=Jsoup.parse(getContentString(resp));
-			System.out.println(HITLoginFetcher.fetchKey(doc));
-			System.out.println(HITLoginFetcher.fetchSetCookies(resp));
-			
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
+
 	
 	public static Request setHeaders(Request request,String ...headers)
 	{
